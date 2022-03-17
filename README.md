@@ -12,7 +12,10 @@ docker-compose up
 docker exec -it lara-app-api php artisan migrate
 docker exec -it lara-app-api php artisan db:seed
 ```
-
+## Endpoints
+- GET localhost:9092/users
+- GET localhost:9092/users/{user}
+- POST localhost:9092/users/{user}/files
 
 ## License
 
