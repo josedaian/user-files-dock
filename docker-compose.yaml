@@ -14,7 +14,7 @@ services:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
     ports:
-      - "2850:3306"
+      - "2854:3306"
     networks:
       - lara-app-network
     volumes: 
@@ -29,22 +29,10 @@ services:
     restart: unless-stopped
     tty: true
     ports:
-      - "9095:95"
-      - "9096:96"
+      - "9092:92"
       - "9443:443"
     networks:
       - lara-app-network
-
-  lara-app-ui:
-    build:
-      context: ./dockerfiles
-      dockerfile: laravel.dockerfile
-    container_name: lara-app-ui
-    networks:
-      - lara-app-network
-    volumes:
-      - ./services/lara-app-frontend:/var/www
-    command: /tmp/scripts/run.sh
 
   lara-app-api:
     build:
@@ -52,7 +40,7 @@ services:
       dockerfile: laravel.dockerfile
     container_name: lara-app-api
     volumes:
-      - ./services/lara-app-backend:/var/www
+      - ./services/user-files-api:/var/www
     networks:
       - lara-app-network
     command: /tmp/scripts/run.sh
