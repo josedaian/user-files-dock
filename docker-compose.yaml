@@ -1,0 +1,58 @@
+version: '3.9'
+
+networks:
+  lara-app-network:
+    driver: bridge
+
+services:
+  databases:
+    container_name: lara-app-database
+    restart: unless-stopped
+    image: mysql:8
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    ports:
+      - "2850:3306"
+    networks:
+      - lara-app-network
+    volumes: 
+      - ./mysql:/var/lib/mysql
+
+  webserver:
+    image: nginx:alpine
+    container_name: lara-app-webserver
+    volumes:
+      - ./services:/var/www
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "9095:95"
+      - "9096:96"
+      - "9443:443"
+    networks:
+      - lara-app-network
+
+  lara-app-ui:
+    build:
+      context: ./dockerfiles
+      dockerfile: laravel.dockerfile
+    container_name: lara-app-ui
+    networks:
+      - lara-app-network
+    volumes:
+      - ./services/lara-app-frontend:/var/www
+    command: /tmp/scripts/run.sh
+
+  lara-app-api:
+    build:
+      context: ./dockerfiles
+      dockerfile: laravel.dockerfile
+    container_name: lara-app-api
+    volumes:
+      - ./services/lara-app-backend:/var/www
+    networks:
+      - lara-app-network
+    command: /tmp/scripts/run.sh
